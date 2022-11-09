@@ -20,18 +20,26 @@ function init() {
 
    // カメラの作成
   const camera1 = new THREE.PerspectiveCamera(
-    50, 7/5, 0.1, 1000);
+    50, window.innerWidth/window.innerHeight, 0.1, 1000);
   {
     camera1.position.set(0,2,15);
     camera1.lookAt(0,0,0);
-    // camera.position.set(-1,0,3);
-    // camera.lookAt(0,-1.5,5);
+    // camera1.position.set(-1,0,3);
+    // camera1.lookAt(0,-1.5,5);
   }
   // 第2のカメラ
  
 
   // 第1のレンダラ
-
+  const renderer = new THREE.WebGLRenderer();
+  {
+    renderer.setClearColor(0x204060);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.zIndex = 0;
+    renderer.domElement.style.top = 0;
+  }
   // 第2のレンダラ
 
   // CSS3Dレンダラ
@@ -68,11 +76,6 @@ function init() {
 
   }
   // 座席の生成
-  const seats = new THREE.Group();
-  {
-
-  }
-  //scene.add(seats);
 
   // ダミーを作る関数
   function makeDummy(color) {
@@ -81,7 +84,7 @@ function init() {
 
   // 他の観客
 
-  // Markerの生成
+  // アバターの生成
 
   // アバターの移動
   function setAvatar(position){
@@ -89,11 +92,6 @@ function init() {
   }
 
   // CSS3D表示のための設定
-    // div要素の生成
-  const div = document.createElement( 'div' );
-  div.style.width = "640px";
-  div.style.height = "360px";
-  div.style.backgroundColor = '#000';
   // iframe要素の生成
   const iframe = document.createElement("iframe");
   iframe.style.width = "640px";
@@ -102,19 +100,12 @@ function init() {
   iframe.src = "https://www.youtube.com/embed?version=3"
       +"&mute=1&autoplay=1&controls=0"
       +"&loop=1&playlist=w23RIKTYF28,-9pMuSNlN6A";
-  div.appendChild( iframe );
-
+  
   // CSSオブジェクトの生成
-  const cssObject = new CSS3DObject(div);
+  const cssObject = new CSS3DObject(iframe);
   cssObject.scale.x *= 8/640;
   cssObject.scale.y *= 8/640;
-  cssObject.position.copy(screen.position);
-  cssObject.rotation.copy(screen.rotation);
   scene.add(cssObject);
-
-  // CSSシーンの生成
-  const cssScene = new THREE.Scene();
-  cssScene.add(cssObject);
 
   // レンダラーの配置
   document.getElementById("output1").appendChild(cssRenderer.domElement);
@@ -140,7 +131,7 @@ function init() {
 
   // 描画処理
   function update(time) {
-    cssRenderer.render(cssScene, camera1);
+    cssRenderer.render(scene, camera1);
     requestAnimationFrame(update);
   }
 
